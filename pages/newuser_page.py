@@ -1,0 +1,96 @@
+from playwright.sync_api import Page, expect
+from .base_page import BasePage
+
+
+class NewUserPage(BasePage):
+    def __init__(self, page: Page):
+        super().__init__(page)
+
+        # -----------------------------
+        # Buttons
+        # -----------------------------
+        self.user_management_btn = page.get_by_role("button", name=" User Management")
+        self.new_user_btn = page.get_by_role("button", name="New User")
+        self.create_btn = page.get_by_role("button", name="Create")
+
+        # -----------------------------
+        # Textboxes
+        # -----------------------------
+        self.first_name = page.get_by_role("textbox", name="First Name")
+        self.last_name = page.get_by_role("textbox", name="Last Name")
+        self.username = page.get_by_role("textbox", name="User Name")
+        self.email = page.get_by_role("textbox", name="Email")
+        self.dob = page.get_by_role("textbox", name="Date of Birth")
+        self.phone = page.get_by_role("textbox", name="1 (702) 123-")  # placeholder dynamic, adjust if needed
+        self.address1 = page.get_by_role("textbox", name="Address1")
+        self.address2 = page.get_by_role("textbox", name="Address2")
+        self.country = page.get_by_role("textbox", name="Country")
+        self.city = page.get_by_role("textbox", name="City")
+        self.state = page.get_by_role("textbox", name="State")
+        self.zip_code = page.get_by_role("textbox", name="Zip Code")
+
+        # -----------------------------
+        # Dropdowns
+        # -----------------------------
+        self.role_dropdown = page.get_by_role("combobox", name="Role")
+        self.organization_dropdown = page.get_by_role("combobox", name="Organization", exact=True)
+        self.user_type_dropdown = page.get_by_role("combobox", name="User Type")
+        self.secondary_org_dropdown = page.get_by_role("combobox", name="Secondary Organization")
+        self.report_dropdown = page.get_by_role("combobox", name="Select Report")
+
+        # -----------------------------
+        # Success message
+        # -----------------------------
+        self.success_message = page.get_by_text("User created successfully")
+
+    # -----------------------------
+    # Methods
+    # -----------------------------
+    def open_form(self):
+        self.user_management_btn.click()
+        self.new_user_btn.click()
+
+    def fill_basic_info(self, first, last, username, email):
+        self.first_name.fill(first)
+        self.last_name.fill(last)
+        self.username.fill(username)
+        self.email.fill(email)
+
+    def select_role(self, role_name):
+        self.role_dropdown.click()
+        self.page.get_by_role("option", name=role_name).click()
+
+    def select_organization(self, org_name):
+        self.organization_dropdown.click()
+        self.page.get_by_role("option", name=org_name).click()
+
+    def select_user_type(self, user_type):
+        self.user_type_dropdown.click()
+        self.page.get_by_role("option", name=user_type).click()
+
+    def select_secondary_orgs(self, *orgs):
+        self.secondary_org_dropdown.click()
+        for org in orgs:
+            self.page.get_by_role("option", name=org).click()
+
+    def fill_contact_info(self, dob, phone, address1, address2, country, city, state, zipCode):
+        self.dob.fill(dob)
+        self.phone.fill(phone)
+        self.address1.fill(address1)
+        self.address2.fill(address2)
+        self.country.fill(country)
+        self.city.fill(city)
+        self.state.fill(state)
+        self.zip_code.fill(zipCode)
+
+    def select_reports(self, *reports):
+        self.report_dropdown.click()
+        for report in reports:
+            self.page.get_by_role("option", name=report).click()
+
+    def submit_form(self):
+        self.create_btn.click()
+
+    def verify_success(self):
+        """Verify user creation success message is visible."""
+        expect(self.success_message).to_be_visible()

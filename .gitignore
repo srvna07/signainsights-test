@@ -1,0 +1,21 @@
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Test output
+screenshots/
+reports/
+
+# Environment (contains credentials — never commit)
+utils/.env
+.env
+
+# Node (not used in this project)
+node_modules/
+package-lock.json
