@@ -1,7 +1,6 @@
 import os
 import pytest
 from playwright.sync_api import sync_playwright
-from utils.data_reader import DataReader
 from utils.env_loader import load_env
 from utils.logger import get_logger
 from pages.login_page import LoginPage
@@ -95,7 +94,6 @@ def authenticated_page(page):
     login = LoginPage(page)
     login.navigate(config["base_url"])
     login.login(os.getenv("USERNAME"), os.getenv("PASSWORD"))
-    page.wait_for_load_state("domcontentloaded")
 
     logger.info("✓ Logged in (session-based authentication). Reusing page…")
 
@@ -129,7 +127,9 @@ def pytest_runtest_makereport(item, call):
         page = item.funcargs.get("authenticated_page") or item.funcargs.get("page")
         if page:
             # Create screenshots directory if it doesn't exist
-            screenshots_dir = Path("screenshots")
+            # screenshots_dir = Path("screenshots")
+            screenshots_dir = Path(__file__).parent / "screenshots"
+
             screenshots_dir.mkdir(exist_ok=True)
 
             # Build screenshot filename: testname + timestamp
