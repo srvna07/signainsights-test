@@ -1,31 +1,4 @@
-import os
 import pytest
-from pages.login_page import LoginPage
-from utils.data_reader import DataReader
-from utils.env_loader import load_env
-
-# Load config for base_url
-_config = DataReader.load_yaml(f"configs/{load_env()}.yaml")
-
-
-# ── Override: login fresh before every test in this file ─────────────────────
-@pytest.fixture
-def authenticated_page(page):
-    login = LoginPage(page)
-    login.navigate(_config["base_url"])
-    login.login(os.getenv("USERNAME"), os.getenv("PASSWORD"))
-
-    # Wait for URL to leave login page — confirms login succeeded
-    page.wait_for_url(
-        lambda url: "login" not in url,
-        timeout=15000
-    )
-
-    # Navigate to dashboard and wait for sidebar to render
-    page.goto(f"{_config['base_url'].rstrip('/')}/dashboard")
-    page.wait_for_load_state("domcontentloaded")
-
-    return page
 
 
 # ── TC 01: Create new user ────────────────────────────────────────────────────
@@ -54,3 +27,24 @@ def test_create_new_user(authenticated_page, new_user_page, new_user_data):
 
     page.submit_form()
     page.verify_success()
+
+# ── TC 02: Delete the created user ───────────────────────────────────────────
+@pytest.mark.smoke
+def test_delete_new_user(authenticated_page, new_user_page, new_user_data):
+    """Search for the created user, delete via trash icon → confirm dialog,
+    verify success message and user no longer appears in the table."""
+    page     = new_user_page
+    username = new_user_data["user"]["username"]
+
+    # Navigate to User Management table
+    page.user_management_btn.click()
+    # page.page.wait_for_load_state("domcontentloaded")
+
+    # Delete flow: search → trash icon → confirm Delete button
+    page.delete_user(username)
+
+    # Verify success toast
+    page.verify_delete_success()
+
+    # Verify user is gone from the table
+    page.verify_user_not_in_table(username)

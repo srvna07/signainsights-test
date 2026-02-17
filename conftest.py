@@ -99,7 +99,7 @@ def authenticated_page(page):
 
     return page
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def new_user_data():
     """Loads new user test data + injects random username & email."""
     data = DataReader.load_yaml("testdata/new_user.yaml")

@@ -1,3 +1,5 @@
+from time import sleep
+
 from playwright.sync_api import Page, expect
 from .base_page import BasePage
 
@@ -12,6 +14,8 @@ class NewUserPage(BasePage):
         self.user_management_btn = page.get_by_role("button", name=" User Management")
         self.new_user_btn = page.get_by_role("button", name="New User")
         self.create_btn = page.get_by_role("button", name="Create")
+        self.delete_btn = page.get_by_role("button", name="Delete")
+
 
         # -----------------------------
         # Textboxes
@@ -30,6 +34,11 @@ class NewUserPage(BasePage):
         self.zip_code = page.get_by_role("textbox", name="Zip Code")
 
         # -----------------------------
+        # Search (User Management table)
+        # -----------------------------
+        self.search_input = page.get_by_role("textbox", name="Search")
+
+        # -----------------------------
         # Dropdowns
         # -----------------------------
         self.role_dropdown = page.get_by_role("combobox", name="Role")
@@ -42,6 +51,8 @@ class NewUserPage(BasePage):
         # Success message
         # -----------------------------
         self.success_message = page.get_by_text("User created successfully")
+        self.delete_success_message = page.get_by_text("User deleted successfully")
+
 
     # -----------------------------
     # Methods
@@ -94,3 +105,29 @@ class NewUserPage(BasePage):
     def verify_success(self):
         """Verify user creation success message is visible."""
         expect(self.success_message).to_be_visible()
+
+# -----------------------------
+    # Delete methods
+    # -----------------------------
+    def search_user(self, username: str):
+        """Search for a user by username in the table."""
+        self.search_input.click()
+        self.search_input.fill(username)
+
+    def delete_user(self, username: str):
+        """Full delete flow (from codegen):
+        search → click Delete (trash icon) → click Delete (confirm dialog).
+        """
+        self.search_user(username)
+        sleep(1)
+        self.delete_btn.click()   # trash icon
+
+        self.delete_btn.click()   # confirm dialog
+
+    def verify_delete_success(self):
+        """Verify the delete success toast is visible."""
+        expect(self.delete_success_message).to_be_visible()
+
+    def verify_user_not_in_table(self, username: str):
+        """Verify the deleted user no longer appears in the table."""
+        expect(self.page.get_by_role("cell", name=username, exact=True)).not_to_be_visible()
