@@ -20,6 +20,5 @@ def main():
     exit_code = pytest.main(args)
     exit(exit_code)
 
-
 if __name__ == "__main__":
     main()
