@@ -14,8 +14,3 @@ reports/
 
 # Environment (contains credentials — never commit)
 .env
-.env
-
-# Node (not used in this project)
-node_modules/
-package-lock.json
