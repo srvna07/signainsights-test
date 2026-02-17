@@ -4,13 +4,10 @@ from .base_page import BasePage
 
 
 class ForgotPasswordPage(BasePage):
-    """Forgot Password page object — Playwright best practices."""
 
     def __init__(self, page: Page):
         super().__init__(page)
 
-        # FIX #3: was h5.MuiTypography-h5 CSS class — fragile, breaks on MUI upgrades.
-        # Use semantic heading role — resilient to any style/version change.
         self.page_header            = page.get_by_role("heading", name="Forgot Password")
 
         self.email_input            = page.get_by_label("Email")
@@ -44,7 +41,7 @@ class ForgotPasswordPage(BasePage):
     def click_contact_us(self):
         self.contact_us_button.click()
 
-    # ── Assertions (web-first — all auto-retry) ──────────────────────────────
+    # ── Assertions ──────────────────────────────
     def verify_page_loaded(self):
         expect(self.page_header).to_be_visible()
         expect(self.email_input).to_be_visible()
@@ -63,6 +60,4 @@ class ForgotPasswordPage(BasePage):
         expect(self.success_message).to_be_visible()
 
     def verify_url(self, page):
-        # FIX #5: was hardcoded "https://dev.signainsights.com/forgot-password"
-        # Now uses regex fragment — works on any environment (dev, prod, staging).
         expect(page).to_have_url(re.compile(r"forgot-password"))

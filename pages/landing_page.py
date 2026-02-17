@@ -4,7 +4,6 @@ from .base_page import BasePage
 
 
 class LandingPage(BasePage):
-    """Landing / Dashboard page object — Playwright best practices."""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -16,9 +15,7 @@ class LandingPage(BasePage):
         self.logout_menu_item      = page.get_by_role("menuitem", name="Logout")
         self.logout_confirm_button = page.get_by_role("button", name="Logout")
 
-        # FIX #4: was get_by_role("button", name=" Dashboard") with a leading
-        # icon-font character prefix. exact=False matches on readable text only,
-        # so icon character changes never break the locator.
+
         self.nav_dashboard            = page.get_by_role("button", name="Dashboard",            exact=False)
         self.nav_user_management      = page.get_by_role("button", name="User Management",      exact=False)
         self.nav_insights             = page.get_by_role("button", name="Insights",             exact=False)
@@ -53,13 +50,9 @@ class LandingPage(BasePage):
     def click_terms(self):
         self.terms_link.click()
 
-    # ── Assertions (web-first — all auto-retry) ──────────────────────────────
+    # ── Assertions  ──────────────────────────────
     def verify_page_loaded(self):
         """Verify all key landing page elements are visible.
-
-        FIX #1: was using pytest_check + is_visible() — point-in-time boolean
-        checks with no retry (Selenium pattern). Now uses expect() which
-        auto-retries until visible or timeout — the correct Playwright pattern.
         """
         expect(self.user_menu_button).to_be_visible()
         expect(self.nav_dashboard).to_be_visible()

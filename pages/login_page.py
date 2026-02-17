@@ -19,8 +19,6 @@ class LoginPage(BasePage):
         self.password_required_error  = page.get_by_text("Password is required")
         self.password_incorrect_error = page.get_by_text("Password is incorrect")
 
-        # FIX #3: was h5.MuiTypography-h5 CSS class — fragile, breaks on MUI upgrades.
-        # Use semantic heading role instead — resilient to any style change.
         self.forgot_password_header   = page.get_by_role("heading", name="Forgot Password")
 
     # ── Navigation ───────────────────────────────────────────────────────────
