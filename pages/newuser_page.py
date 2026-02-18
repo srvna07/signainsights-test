@@ -114,6 +114,11 @@ class NewUserPage(BasePage):
         self.search_input.click()
         self.search_input.fill(username)
 
+    def verify_user_in_table(self, username: str):
+        self.search_input.click()
+        self.search_input.fill(username)
+        expect(self.page.get_by_text(username, exact=False)).to_be_visible()
+
     def delete_user(self, username: str):
         """Full delete flow (from codegen):
         search → click Delete (trash icon) → click Delete (confirm dialog).

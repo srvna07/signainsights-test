@@ -1,3 +1,5 @@
+from time import sleep
+
 import pytest
 
 
@@ -27,6 +29,8 @@ def test_create_new_user(authenticated_page, new_user_page, new_user_data):
 
     page.submit_form()
     page.verify_success()
+    page.verify_user_in_table(user["username"])
+
 
 # ── TC 02: Delete the created user ───────────────────────────────────────────
 @pytest.mark.smoke
