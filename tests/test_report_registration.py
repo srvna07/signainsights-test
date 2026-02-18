@@ -1,0 +1,1 @@
+expect(page.get_by_role("row", name=report_name)).to_be_visible()
