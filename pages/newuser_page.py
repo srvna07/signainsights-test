@@ -53,6 +53,9 @@ class NewUserPage(BasePage):
         self.success_message = page.get_by_text("User created successfully")
         self.delete_success_message = page.get_by_text("User deleted successfully")
 
+        self.update_btn = page.get_by_role("button", name="Update")
+        self.update_success_message = page.get_by_text("User updated successfully")
+
 
     # -----------------------------
     # Methods
@@ -136,3 +139,38 @@ class NewUserPage(BasePage):
     def verify_user_not_in_table(self, username: str):
         """Verify the deleted user no longer appears in the table."""
         expect(self.page.get_by_role("cell", name=username, exact=True)).not_to_be_visible()
+
+    def edit_user(self, username: str):
+        """Search for user and click Edit icon."""
+        self.search_user(username)
+        sleep(1)
+        self.page.get_by_role("button", name="Edit").first.click()
+
+    def verify_update_success(self):
+        """Verify update success toast is visible."""
+        expect(self.update_success_message).to_be_visible()
+
+    def navigate_to_dashboard(self):
+        """Navigate to dashboard using base_url from config."""
+        from utils.data_reader import DataReader
+        from utils.env_loader import load_env
+
+        config = DataReader.load_yaml(f"configs/{load_env()}.yaml")
+        self.page.goto(f"{config['base_url'].rstrip('/')}/dashboard")
+
+    def verify_user_updated(self, username: str, updated_first: str, updated_last: str, updated_role: str):
+        """Verify user updates in table and by re-opening edit form."""
+        # Verify changes in table (list page)
+        self.verify_user_in_table(username)
+        expect(self.page.get_by_text(updated_first, exact=False)).to_be_visible()
+        expect(self.page.get_by_text(updated_last, exact=False)).to_be_visible()
+
+        # Navigate to dashboard then back to User Management
+        self.navigate_to_dashboard()
+        self.user_management_btn.click()
+
+        # Re-open the edit form and verify fields are persisted
+        self.edit_user(username)
+        expect(self.first_name).to_have_value(updated_first)
+        expect(self.last_name).to_have_value(updated_last)
+        expect(self.role_dropdown).to_have_value(updated_role)

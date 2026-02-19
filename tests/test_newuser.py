@@ -32,13 +32,42 @@ def test_create_new_user(authenticated_page, new_user_page, new_user_data):
     page.verify_user_in_table(user["username"])
 
 
+# ── TC 03: Edit user and verify all fields updated ───────────────────────────
+@pytest.mark.smoke
+def test_edit_user(authenticated_page, new_user_page, new_user_data):
+    """Edit all fields of the created user and verify updates are saved."""
+    page = new_user_page
+    username = new_user_data["user"]["username"]
+
+    page.user_management_btn.click()
+    page.edit_user(username)
+
+    # Update editable fields
+    updated_first = "UpdatedFirst"
+    updated_last = "UpdatedLast"
+    updated_role = "HR"
+
+    page.first_name.clear()
+    page.first_name.fill(updated_first)
+    page.last_name.clear()
+    page.last_name.fill(updated_last)
+    page.select_role(updated_role)
+
+    page.update_btn.click()
+    page.verify_update_success()
+
+    page.verify_user_updated(username, updated_first, updated_last, updated_role)
+
 # ── TC 02: Delete the created user ───────────────────────────────────────────
 @pytest.mark.smoke
 def test_delete_new_user(authenticated_page, new_user_page, new_user_data):
     """Search for the created user, delete via trash icon → confirm dialog,
     verify success message and user no longer appears in the table."""
+
     page     = new_user_page
     username = new_user_data["user"]["username"]
+    page.navigate_to_dashboard()
+
 
     # Navigate to User Management table
     page.user_management_btn.click()
