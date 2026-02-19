@@ -1,4 +1,6 @@
 import re
+import time
+from playwright.sync_api import TimeoutError
 from playwright.sync_api import Page, expect
 
 
@@ -24,3 +26,11 @@ class BasePage:
     def assert_url_exact(self, url: str):
         """Assert current URL matches exactly — auto-retrying."""
         expect(self.page).to_have_url(url)
+
+    def force_click(self, locator):
+        locator.click(force=True)
+
+    def js_click(self, locator):
+        locator.evaluate("el => el.click()")
+
+
