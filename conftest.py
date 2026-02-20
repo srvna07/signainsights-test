@@ -112,6 +112,12 @@ def new_user_data():
 
     return data
 
+@pytest.fixture
+def report_test_data():
+    from utils.data_generator import DataGenerator
+    # This calls your existing logic to update and return the YAML data
+    return DataGenerator.update_report_fields()
+
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     """
