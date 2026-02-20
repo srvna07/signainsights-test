@@ -120,16 +120,11 @@ def new_user_data():
 
     return data
 
-@pytest.fixture(scope="session")
-def new_organization_data():
-    """Loads new organization test data + injects random org name."""
-    data = DataReader.load_yaml("testdata/new_organization.yaml")
-
-    prefix = data["organization"]["namePrefix"]
-    data["organization"]["name"] = DataFactory.random_org_name(prefix)
-    data["organization"]["franchise_id"] = DataFactory.random_string()
-
-    return data
+@pytest.fixture
+def import_report_test_data():
+    from utils.data_generator import DataGenerator
+    # This calls your existing logic to update and return the YAML data
+    return DataGenerator.update_report_fields()
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
