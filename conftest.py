@@ -79,7 +79,10 @@ def landing_page(page):
 def new_user_page(page):
     return NewUserPage(page)
 
-
+@pytest.fixture
+def update_user_data():
+    """Load update user test data."""
+    return DataReader.load_yaml("testdata/update_user.yaml")
 
 # ---------------------------
 # Authenticated Session Fixture
