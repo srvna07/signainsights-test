@@ -10,7 +10,7 @@ class ReportRegistrationPageLocators(BasePage):
         # ---------- Static Page Elements ----------
 
         # Navigate report registration
-        self.report_registrations_btn = page.get_by_role("button", name="Report Registrations")
+        self.report_registrations_btn = page.get_by_role("button", name=" Report Registrations")
 
         # Search
         self.search_report = page.get_by_placeholder("Search")
@@ -21,7 +21,7 @@ class ReportRegistrationPageLocators(BasePage):
         # Pagination
         self.report_tabel_go_to_next_page = page.get_by_role("button", name = "Go to next page")
         self.report_tabel_go_to_previous_page = page.get_by_role("button", name = "Go to previous page")
-        self.report_tabel_rows_per_page = page.get_by_role("combobox")
+        self.report_tabel_rows_per_page = page.get_by_role("combobox", name="Rows per page:")
 
         # Role Options
         self.admin_option_in_role_combobox = self.page.get_by_role("option", name = "Admin")
@@ -31,9 +31,9 @@ class ReportRegistrationPageLocators(BasePage):
         self.operations_option_in_role_combobox = self.page.get_by_role("option", name = "Operations")
 
         # Row Per Page Options
-        self.report_table_5_rows_per_page = page.get_by_role("option", name="5")
-        self.report_table_5_rows_per_page = page.get_by_role("option", name="10")
-        self.report_table_25_rows_per_page = page.get_by_role("option", name="25")
+        self.report_table_5_rows_per_page = page.get_by_role("option", name="5", exact=True)
+        self.report_table_10_rows_per_page = page.get_by_role("option", name="10", exact=True)
+        self.report_table_25_rows_per_page = page.get_by_role("option", name="25", exact=True)
 
 
     # ---------- Shared Dialog ----------
@@ -66,7 +66,7 @@ class ReportRegistrationPageLocators(BasePage):
     def report_id_input(self) -> Locator:
         return self.dialog().get_by_label("ReportId *")
 
-    def dataset_id_input(self) -> Locator:
+    def data_set_id_input(self) -> Locator:
         return self.dialog().get_by_label("DatasetId *")
 
     def dashboard_checkbox(self) -> Locator:
@@ -186,6 +186,9 @@ class ReportRegistrationPageActions(BasePage):
     def fill_report_id_input(self, report_id):
         self.locators.report_id_input().fill(report_id)
 
+    def fill_dataset_id(self, data_set_id):
+        self.locators.data_set_id_input().fill(data_set_id)
+
     def click_role_combobox(self):
         self.locators.role_combobox().click()
 
@@ -212,12 +215,13 @@ class ReportRegistrationPageActions(BasePage):
 
 
 
-    def create_new_report(self, report_name, menu_name, workspace_id, report_id):
+    def create_new_report(self, report_name, menu_name, workspace_id, report_id, dataset_id):
         self.click_create_new_report()
         self.fill_the_report_name_file(report_name)
         self.fill_the_menu_input(menu_name)
         self.fill_workspace_id_input(workspace_id)
         self.fill_report_id_input(report_id)
+        self.fill_dataset_id(dataset_id)
         self.click_role_combobox()
         self.select_admin_role_in_role_combobox()
         self.select_hr_role_in_role_combobox()
@@ -240,7 +244,7 @@ class ReportRegistrationPageActions(BasePage):
 
     def check_rows_per_pages_10(self):
         self.click_row_per_page_dropdown()
-        self.click_row_per_page_count_()
+        self.click_row_per_page_count_10()
 
     def navigate_between_next_and_previous_pages(self):
         self.click_pagination_go_to_next_page()

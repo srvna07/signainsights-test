@@ -63,7 +63,7 @@ class NewOrganizationPage(BasePage):
         self.organization_name.fill(org_name)
         self.franchise_id.fill(franchise_id)
 
-        
+    
 
     def fill_contact_info(self, phone, mobile,address1, address2, city, state, country, zip_code, web_address):
         self.phone.fill(phone)
@@ -80,8 +80,15 @@ class NewOrganizationPage(BasePage):
         self.create_btn.click()
 
     def verify_success(self):
-        """Verify user creation success message is visible."""
         expect(self.success_message).to_be_visible()
+
+    def create_organization_action(self, org_data):
+        self.open_form()    
+        # Fix: Added 'org_data' before the brackets
+        self.fill_basic_info(org_name=org_data["organization"]["name"], franchise_id=org_data["organization"]["franchise_id"])
+        self.fill_contact_info(**org_data["contact"])
+        self.submit_form()
+        self.verify_success()
 
     # -----------------------------
     # Delete methods
