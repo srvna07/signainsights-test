@@ -12,5 +12,6 @@ contact:
   city: "Test"
   state: "TEst"
   zip_code: "606201"
+  web_address: "www.test.com"
 
 

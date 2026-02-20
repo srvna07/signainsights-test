@@ -33,6 +33,7 @@ class NewOrganizationPage(BasePage):
         self.zip_code = page.get_by_role("textbox", name="Zip Code")
         self.phone = page.locator("text=Phone Number").locator("..").locator("input[type='tel']")
         self.mobile = page.locator("text=Mobile Number").locator("..").locator("input[type='tel']")
+        self.web_address = page.get_by_role("textbox", name="Web Address")
 
 
 
@@ -64,7 +65,7 @@ class NewOrganizationPage(BasePage):
 
         
 
-    def fill_contact_info(self, phone, mobile,address1, address2, city, state, country, zip_code):
+    def fill_contact_info(self, phone, mobile,address1, address2, city, state, country, zip_code, web_address):
         self.phone.fill(phone)
         self.mobile.fill(mobile)
         self.address_1.fill(address1)
@@ -73,6 +74,7 @@ class NewOrganizationPage(BasePage):
         self.state.fill(state)
         self.country.fill(country)
         self.zip_code.fill(zip_code)
+        self.web_address.fill(web_address)
 
     def submit_form(self):
         self.create_btn.click()
@@ -149,6 +151,8 @@ class NewOrganizationPage(BasePage):
         self.state.fill(contact["state"])
         self.clear_field(self.country)
         self.country.fill(contact["country"])
+        self.clear_field(self.web_address)
+        self.web_address.fill(contact["web_address"])
         self.clear_field(self.zip_code)
         self.zip_code.fill(contact["zip_code"])
 
@@ -180,12 +184,14 @@ class NewOrganizationPage(BasePage):
         # Verify contact info
         
         expect(self.phone).to_have_value(contact["phone"])
+        expect(self.mobile).to_have_value(contact["mobile"])
         expect(self.address1).to_have_value(contact["address1"])
         expect(self.address2).to_have_value(contact["address2"])
         expect(self.country).to_have_value(contact["country"])
         expect(self.city).to_have_value(contact["city"])
         expect(self.state).to_have_value(contact["state"])
-        expect(self.zip_code).to_have_value(contact["zipCode"])
+        expect(self.web_address).to_have_value(contact["web_address"])
+        expect(self.zip_code).to_have_value(contact["zip_code"])
 
     def navigate_to_dashboard(self):
         from utils.data_reader import DataReader
