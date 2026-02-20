@@ -83,7 +83,9 @@ def new_user_page(page):
 @pytest.fixture
 def update_user_data():
     """Load update user test data."""
-    return DataReader.load_yaml("testdata/update_user.yaml")@pytest.fixture
+    return DataReader.load_yaml("testdata/update_user.yaml")
+    
+@pytest.fixture
 def new_organization_page(page):
     return NewOrganizationPage(page)
 
