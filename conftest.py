@@ -6,6 +6,7 @@ from utils.logger import get_logger
 from pages.login_page import LoginPage
 from pages.forgot_password_page import ForgotPasswordPage
 from pages.newuser_page import NewUserPage
+from pages.organizations_page import NewOrganizationPage
 from pages.landing_page import LandingPage
 from utils.data_reader import DataReader
 from utils.data_factory import DataFactory
@@ -79,7 +80,14 @@ def landing_page(page):
 def new_user_page(page):
     return NewUserPage(page)
 
-
+@pytest.fixture
+def update_user_data():
+    """Load update user test data."""
+    return DataReader.load_yaml("testdata/update_user.yaml")
+    
+@pytest.fixture
+def new_organization_page(page):
+    return NewOrganizationPage(page)
 
 # ---------------------------
 # Authenticated Session Fixture
@@ -148,3 +156,8 @@ def pytest_runtest_makereport(item, call):
 
             # Print path to console for easy debugging
             print(f"\n📸 Screenshot captured: {screenshot_file}")
+
+@pytest.fixture
+def update_organization_data():
+    """Load update organization test data."""
+    return DataReader.load_yaml("testdata/update_organization.yaml")

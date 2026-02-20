@@ -15,3 +15,9 @@ class DataFactory:
     @staticmethod
     def random_email(prefix="user_", domain="@gmail.com"):
         return prefix + DataFactory.random_string() + domain
+
+    @staticmethod
+    def random_org_name(prefix="Org_"):
+        return prefix + DataFactory.random_string()
+
+    
