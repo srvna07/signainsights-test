@@ -22,6 +22,11 @@ class DataGenerator:
     def generate_menu_name(prefix="Test_Menu"):
         return f"{prefix}_{DataGenerator.random_string()}"
 
+    @staticmethod
+    def generate_organization_name(prefix="Test_Organization"):
+        suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        return f"{prefix}_{suffix}"
+
     @classmethod
     def update_report_fields(cls):
         if not cls.DATA_FILE.exists():
@@ -32,11 +37,13 @@ class DataGenerator:
 
         data["new_report"]["report_name"] = cls.generate_report_name()
         data["new_report"]["menu_name"] = cls.generate_menu_name()
-        data["edit_report"]["report_name"] = cls.generate_report_name("Edited_Report")
+        data["edit_report"]["report_name"] = cls.generate_report_name("Test_Edited_Report")
+        data["organization"]["name"] = cls.generate_organization_name()
 
         with open(cls.DATA_FILE, "w") as file:
             yaml_string = yaml.dump(data, sort_keys=False)
             yaml_string = yaml_string.replace("\nedit_report:", "\n\nedit_report:")
+            yaml_string = yaml_string.replace("\norganization:", "\n\norganization:")
             file.write(yaml_string)
 
         print("YAML updated successfully.")

@@ -10,7 +10,7 @@ class ReportRegistrationPageLocators(BasePage):
         # ---------- Static Page Elements ----------
 
         # Navigate report registration
-        self.report_registrations_btn = page.get_by_role("button", name=" Report Registrations")
+        self.report_registrations_btn = page.get_by_role("button", name="Report Registrations")
 
         # Search
         self.search_report = page.get_by_placeholder("Search")
@@ -116,8 +116,9 @@ class ReportRegistrationPageActions(BasePage):
         self.locators = ReportRegistrationPageLocators(page)
 
     def navigate_to_report_registration(self):
+        self.locators.report_registrations_btn.wait_for(state="visible")
         self.locators.report_registrations_btn.click()
-        self.locators.new_report.wait_for(state="visible")
+        
 
     # Table
     def click_report_preview_button(self, report_name):
@@ -211,11 +212,15 @@ class ReportRegistrationPageActions(BasePage):
         self.locators.operations_option_in_role_combobox.click()
 
     def select_created_organization(self, organization):
-        self.locators.organization_option(organization).click()
+        self.page.get_by_label("Organization").click()
+        option = self.page.get_by_role("option", name=organization)
+        option.wait_for(state="visible")
+        option.click()
 
 
 
-    def create_new_report(self, report_name, menu_name, workspace_id, report_id, dataset_id):
+    def create_new_report(self, report_name, menu_name, workspace_id, report_id, dataset_id, organization_name):
+        self.navigate_to_report_registration()
         self.click_create_new_report()
         self.fill_the_report_name_file(report_name)
         self.fill_the_menu_input(menu_name)
@@ -226,7 +231,7 @@ class ReportRegistrationPageActions(BasePage):
         self.select_admin_role_in_role_combobox()
         self.select_hr_role_in_role_combobox()
         self.click_organization_combobox()
-        self.select_created_organization()
+        self.select_created_organization(organization_name)
         self.click_create_button()
 
     def edit_created_report(self, report_name):

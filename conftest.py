@@ -15,8 +15,10 @@ from pathlib import Path
 from datetime import datetime
 import random
 import string
+import logging
 
 
+logger = logging.getLogger(__name__)
 logger = get_logger(__name__)
 
 # Load ENV + YAML Config
@@ -88,10 +90,6 @@ def update_user_data():
     """Load update user test data."""
     return DataReader.load_yaml("testdata/update_user.yaml")
     
-@pytest.fixture
-def new_organization_page(page):
-    return NewOrganizationPage(page)
-
 # ---------------------------
 # Authenticated Session Fixture
 # ---------------------------
@@ -165,26 +163,6 @@ def update_organization_data():
     """Load update organization test data."""
     return DataReader.load_yaml("testdata/update_organization.yaml")
 
-@pytest.fixture
-def created_organization(new_organization_page, new_organization_data):
-    # Use 'namePrefix' because that is what is in your YAML
-    org = new_organization_data["organization"]
-    
-    import random, string
-    suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-    
-    # Create the full name manually here
-    org_name = f"{org['namePrefix']}{suffix}" 
-    
-    # Now call your action
-    # We pass the name separately or update the dictionary
-    new_organization_page.open_form()
-    new_organization_page.fill_basic_info(org_name=org_name, franchise_id=org["franchise_id"])
-    new_organization_page.fill_contact_info(**new_organization_data["contact"])
-    new_organization_page.submit_form()
-    
-    return org_name
-
 
 
 import pytest
@@ -212,7 +190,7 @@ def new_organization_page(page):
 @pytest.fixture
 def new_organization_data():
     """Reads the YAML file and provides the data dictionary"""
-    # Adjust path if your folder name is 'test_data' or 'testdata'
+    # Use an absolute path or join with the current file's directory
     path = os.path.join(os.path.dirname(__file__), "testdata", "new_organization.yaml")
     with open(path, "r") as f:
         return yaml.safe_load(f)

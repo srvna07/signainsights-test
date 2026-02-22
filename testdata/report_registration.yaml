@@ -1,26 +1,22 @@
 new_report:
-  report_name: Test_Report_20260220155529
-  menu_name: Test_Menu_KC9e
+  report_name: Test_Report_20260221143707
+  menu_name: Test_Menu_Qm9r
   work_space_id: 500b7956-e39e-4ff3-981f-8d66c9ab364e
   report_id: fcb552da-232b-44c0-b736-45820ec61f7f
-  data_set_id: c5e28aa6-52c7-400b-8f81-9611dbc3f6cc
+  dataset_id: c5e28aa6-52c7-400b-8f81-9611dbc3f6cc
 
 edit_report:
-  report_name: Edited_Report_20260220155529
+  report_name: Test_Edited_Report_20260221143707
 
 organization:
-  namePrefix: ""
-  franchise_id: "Test"
-  
-contact:
-  phone: "+91 9867543710"
-  mobile: "+91 9867543711"
-  address1: "Test"
-  address2: "Test"
-  country: "Test"
-  city: "Test"
-  state: "TEst"
-  zip_code: "606201"
-  web_address: "www.test.com"
-
-
+  organization_name: Test_Organization_X0QNQ
+  franchise_id: test_1234567890
+  phone: +91 9867543710
+  mobile: +91 9867543711
+  address1: test_address_1
+  address2: test_address_2
+  country: test_country
+  city: test_city
+  state: test_state
+  zip_code: '606201'
+  web_address: www.test.com

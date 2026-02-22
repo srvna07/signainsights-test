@@ -76,19 +76,29 @@ class NewOrganizationPage(BasePage):
         self.zip_code.fill(zip_code)
         self.web_address.fill(web_address)
 
+    def fill_organization_info(self, name, franchise_id, phone, mobile, address1, address2, city, state, country, zip_code, web_address):
+        self.organization_name.fill(name)
+        self.franchise_id.fill(franchise_id)
+        self.phone.fill(phone)
+        self.mobile.fill(mobile)
+        self.address_1.fill(address1)
+        self.address_2.fill(address2)
+        self.city.fill(city)
+        self.state.fill(state)
+        self.country.fill(country)
+        self.zip_code.fill(zip_code)
+        self.web_address.fill(web_address)
+
     def submit_form(self):
         self.create_btn.click()
 
     def verify_success(self):
         expect(self.success_message).to_be_visible()
 
-    def create_organization_action(self, org_data):
+    def create_organization_action(self, **kwargs):
         self.open_form()    
-        # Fix: Added 'org_data' before the brackets
-        self.fill_basic_info(org_name=org_data["organization"]["name"], franchise_id=org_data["organization"]["franchise_id"])
-        self.fill_contact_info(**org_data["contact"])
+        self.fill_organization_info(**kwargs)
         self.submit_form()
-        self.verify_success()
 
     # -----------------------------
     # Delete methods

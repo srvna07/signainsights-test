@@ -1,42 +1,50 @@
 from playwright.sync_api import expect
 from pages.report_registration_page import ReportRegistrationPageActions
 from pages.organizations_page import NewOrganizationPage
+from utils.test_data_loader import TestDataLoader
+import yaml
+from pathlib import Path
 import pytest
-import re
-import random
-import string
+import logging
 
-# Use the fixture names that Pytest actually found in your session
-# These are: authenticated_page, report_test_data
+# 1. FIX: Define the logger so it stops crashing
+logger = logging.getLogger(__name__)
+
+data = TestDataLoader.import_report_registration_test_data()
 
 @pytest.mark.smoke
-def test_create_new_report(authenticated_page, report_test_data, created_organization, new_organization_page, new_organization_data):
-    # Initialize the page actions object
+def test_create_new_organization(authenticated_page):
+    # 1. Load the data using your new class method
+    data = TestDataLoader.import_report_registration_test_data()
+    org_data = data["organization"]
 
-    new_organization_page.NewOrganizationPage.create_organization_action(new_organization_data)
+    # 2. create the Page Object
+    org_page = NewOrganizationPage(authenticated_page)
 
-    org_name = created_organization
+    # 3. Call the action to perform the task
+    org_page.create_organization_action(**org_data)
+
+    # 4. Verify the resuls
+    org_page.verify_success()
+
+@pytest.mark.smoke
+def test_create_new_report(authenticated_page):
     
-    print(f"Testing report registration for: {org_name}")
-
+    # 1. Access your data blocks
+    new_report = data["new_report"]
+    org_name = data["organization"]
+    
+    # 2. Use the data in your actions
     report_page = ReportRegistrationPageActions(authenticated_page)
-    
-    # Grab the specific 'new_report' block from the YAML data
-    new_report = report_test_data["new_report"]
-
-    # Use the object to navigate
-    report_page.navigate_to_report_registration()
-
-    # Fill the form using the UUIDs and names from the YAML
     report_page.create_new_report(
         report_name=new_report["report_name"],
         menu_name=new_report["menu_name"],
         workspace_id=new_report["work_space_id"],
         report_id=new_report["report_id"],
-        organization = org_name
+        dataset_id=new_report["dataset_id"],
+        organization=org_name["name"]
     )
 
-    # Verify visibility
     expect(authenticated_page.get_by_text(new_report["report_name"])).to_be_visible()
 
 @pytest.mark.smoke
@@ -45,15 +53,16 @@ def test_edit_created_report(authenticated_page, report_test_data):
     new_report = report_test_data["new_report"]
     edit_report = report_test_data["edit_report"]
 
-    # Create first
+    # 2. FIX: Added the missing dataset_id and organization here
     report_page.create_new_report(
         report_name=new_report["report_name"],
         menu_name=new_report["menu_name"],
         workspace_id=new_report["work_space_id"],
-        report_id=new_report["report_id"]
+        report_id=new_report["report_id"],
+        dataset_id=new_report["dataset_id"],
+        organization="Default Org"          
     )
 
-    # Edit
     report_page.edit_created_report(edit_report["report_name"])
     expect(authenticated_page.get_by_text(edit_report["report_name"])).to_be_visible()
 
