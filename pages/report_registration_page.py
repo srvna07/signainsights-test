@@ -160,7 +160,7 @@ class ReportRegistrationPageActions(BasePage):
     def click_pagination_go_to_next_page(self):
         self.locators.report_tabel_go_to_next_page.click()
 
-    def click_pagination_go_to_next_page(self):
+    def click_pagination_go_to_previous_page(self):
         self.locators.report_tabel_go_to_previous_page.click()
     
     # Search
@@ -175,8 +175,8 @@ class ReportRegistrationPageActions(BasePage):
         self.locators.create_button().click()
 
     # fill fields in create and edit report dialogbox
-    def fill_the_report_name_file(self, report_name):
-        self.locators.report_name_input().fill(report_name)
+    def fill_the_report_name_file(self, edit_report_name):
+        self.locators.report_name_input().fill(edit_report_name)
 
     def fill_the_menu_input(self, menu_name):
         self.locators.menu_input().fill(menu_name)
@@ -219,7 +219,7 @@ class ReportRegistrationPageActions(BasePage):
 
 
 
-    def create_new_report(self, report_name, menu_name, workspace_id, report_id, dataset_id, organization_name):
+    def create_new_report(self, report_name, menu_name, workspace_id, report_id, dataset_id, organization):
         self.navigate_to_report_registration()
         self.click_create_new_report()
         self.fill_the_report_name_file(report_name)
@@ -230,12 +230,12 @@ class ReportRegistrationPageActions(BasePage):
         self.click_role_combobox()
         self.select_admin_role_in_role_combobox()
         self.select_hr_role_in_role_combobox()
-        self.click_organization_combobox()
-        self.select_created_organization(organization_name)
+        self.select_created_organization(organization)
         self.click_create_button()
 
-    def edit_created_report(self, report_name):
-        self.fill_the_report_name_file(report_name)
+    def edit_created_report(self, report_name, edit_report_name):
+        self.click_report_edit_button(report_name)
+        self.fill_the_report_name_file(edit_report_name)
         self.click_role_combobox()
         self.select_sales_and_marketing_role_in_role_combobox()
         self.click_report_edit_confirmation_Button()

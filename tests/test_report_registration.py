@@ -2,6 +2,7 @@ from playwright.sync_api import expect
 from pages.report_registration_page import ReportRegistrationPageActions
 from pages.organizations_page import NewOrganizationPage
 from utils.test_data_loader import TestDataLoader
+from utils.data_generator import DataGenerator
 import yaml
 from pathlib import Path
 import pytest
@@ -10,6 +11,7 @@ import logging
 # 1. FIX: Define the logger so it stops crashing
 logger = logging.getLogger(__name__)
 
+report_test_data = DataGenerator.update_report_fields()
 data = TestDataLoader.import_report_registration_test_data()
 
 @pytest.mark.smoke
@@ -51,19 +53,9 @@ def test_create_new_report(authenticated_page):
 def test_edit_created_report(authenticated_page, report_test_data):
     report_page = ReportRegistrationPageActions(authenticated_page)
     new_report = report_test_data["new_report"]
-    edit_report = report_test_data["edit_report"]
+    edit_report = report_test_data["edit_report"]         
 
-    # 2. FIX: Added the missing dataset_id and organization here
-    report_page.create_new_report(
-        report_name=new_report["report_name"],
-        menu_name=new_report["menu_name"],
-        workspace_id=new_report["work_space_id"],
-        report_id=new_report["report_id"],
-        dataset_id=new_report["dataset_id"],
-        organization="Default Org"          
-    )
-
-    report_page.edit_created_report(edit_report["report_name"])
+    report_page.edit_created_report(new_report["report_name"], edit_report["report_name"])
     expect(authenticated_page.get_by_text(edit_report["report_name"])).to_be_visible()
 
 @pytest.mark.smoke
@@ -89,3 +81,25 @@ def test_rows_per_page_25(authenticated_page):
 
     rows = authenticated_page.locator("table tbody tr")
     assert rows.count() <= 25
+
+def test_navigate_between_next_and_previous_pages(authenticated_page):
+    report_page = ReportRegistrationPageActions(authenticated_page)
+    
+    # 1. Navigate to the registrations page first
+    report_page.navigate_to_report_registration()
+
+    # 2. Get the initial state (e.g., the first report name)
+    first_page_report = authenticated_page.locator("table tbody tr").first.text_content()
+
+    # 3. Go to next page
+    report_page.click_pagination_go_to_next_page()
+    
+    # Assert: The first row should now be different
+    next_page_report = authenticated_page.locator("table tbody tr").first
+    expect(next_page_report).not_to_have_text(first_page_report)
+
+    # 4. Go back to previous page
+    report_page.click_pagination_go_to_previous_page()
+
+    # Assert: We should be back to the original report
+    expect(authenticated_page.locator("table tbody tr").first).to_have_text(first_page_report)
