@@ -7,6 +7,7 @@ from pages.login_page import LoginPage
 from pages.forgot_password_page import ForgotPasswordPage
 from pages.newuser_page import NewUserPage
 from pages.organizations_page import NewOrganizationPage
+from pages.report_registration_page import ReportRegistrationPageActions
 from pages.landing_page import LandingPage
 from utils.data_reader import DataReader
 from utils.data_factory import DataFactory
@@ -89,6 +90,11 @@ def update_user_data():
 def new_organization_page(page):
     return NewOrganizationPage(page)
 
+@pytest.fixture
+def report_registration_page(page):
+    
+    return ReportRegistrationPageActions(page)
+
 # ---------------------------
 # Authenticated Session Fixture
 # ---------------------------
@@ -117,6 +123,16 @@ def new_user_data():
 
     data["user"]["username"] = DataFactory.random_username(prefix)
     data["user"]["email"] = DataFactory.random_email(prefix, domain)
+
+    return data
+@pytest.fixture(scope="session")
+def new_organization_data():
+    """Loads new organization test data + injects random org name."""
+    data = DataReader.load_yaml("testdata/new_organization.yaml")
+
+    prefix = data["organization"]["name"]
+    data["organization"]["name"] = DataFactory.random_org_name(prefix)
+    data["organization"]["franchise_id"] = DataFactory.random_string()
 
     return data
 
