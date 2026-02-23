@@ -5,10 +5,11 @@ from datetime import datetime
 from pathlib import Path
 
 
+
 class DataGenerator:
 
-    # Adjust this path if needed
-    DATA_FILE = Path("testdata/report_registration.yaml")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATA_FILE = BASE_DIR / "testdata" / "report_registration.yaml"
 
     @staticmethod
     def random_string(length=4):

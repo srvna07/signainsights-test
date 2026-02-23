@@ -1,5 +1,5 @@
 organization:
-  namePrefix: "Org_"
+  name: "Org_"
   franchise_id: "Test"
   
 

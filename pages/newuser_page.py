@@ -80,6 +80,12 @@ class NewUserPage(BasePage):
         self.state.fill(state)
         self.zip_code.fill(zipCode)
 
+    def open_reports_dropdown(self):
+        self.report_dropdown.click()
+
+    def close_reports_dropdown(self):
+        self.page.keyboard.press("Escape")
+
     def select_reports(self, *reports):
         self.report_dropdown.click()
         for report in reports:
@@ -209,3 +215,9 @@ class NewUserPage(BasePage):
         from utils.env_loader import load_env
         config = DataReader.load_yaml(f"configs/{load_env()}.yaml")
         self.page.goto(f"{config['base_url'].rstrip('/')}/dashboard")
+
+    def verify_report_visible(self, report_name: str):
+        expect(self.page.get_by_role("option", name=report_name)).to_be_visible()
+
+    def verify_report_not_visible(self, report_name: str):
+        expect(self.page.get_by_role("option", name=report_name)).not_to_be_visible()
