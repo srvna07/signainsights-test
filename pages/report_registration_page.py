@@ -83,7 +83,7 @@ class ReportRegistrationPageLocators(BasePage):
         return self.page.get_by_role("option", name = role_name)
 
     def organization_option(self, organization: str) -> Locator:
-        return self.page.get_by_role("option", name = organization)
+        return self.page.get_by_role("option").filter(has_text=organization)
 
     # ---------- Table ----------
     def row(self, report_name: str) -> Locator:
@@ -101,7 +101,7 @@ class ReportRegistrationPageLocators(BasePage):
     # --- Organization Combobox Option ------
 
     def organization_option(self, organization: str) -> Locator:
-        return self.dialog().get_by_role("option", name = organization)
+        return self.page.get_by_role("option").filter(has_text=organization)
     
     # --- Search ------
 
@@ -184,6 +184,10 @@ class ReportRegistrationPageActions(BasePage):
     def fill_workspace_id_input(self, workspace_id):
         self.locators.workspace_id_input().fill(workspace_id)
 
+    def fill_dataset_id_input(self, dataset_id):
+        self.locators.dataset_id_input().fill(dataset_id)
+    
+
     def fill_report_id_input(self, report_id):
         self.locators.report_id_input().fill(report_id)
 
@@ -255,7 +259,8 @@ class ReportRegistrationPageActions(BasePage):
         self.click_pagination_go_to_next_page()
         self.click_report_preview_button()
 
-    
+    def is_report_visible(self, report_name):
+        return self.page.get_by_role("option", name=report_name).is_visible()
 
 
 

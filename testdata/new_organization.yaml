@@ -1,6 +1,13 @@
 organization:
+<<<<<<< HEAD
   namePrefix: Org_W0ZOZ
   franchise_id: Test
+=======
+  name: "Org_"
+  franchise_id: "Test"
+  
+
+>>>>>>> 3d96b22a6362ea7da79f04849c1ae6b55408e2a4
 contact:
   phone: +91 9867543710
   mobile: +91 9867543711
