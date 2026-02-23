@@ -1,0 +1,23 @@
+# Signa User credentials
+credentials:
+  username: "signa_test_user"
+  password: "SignaUser@123"
+
+# Users created during Signa User tests (username/email generated at runtime)
+# Note: Signa User cannot create Super Admin
+create_users:
+  - firstName: "Auto"
+    lastName: "OrgAdmin"
+    usernamePrefix: "auto_oa_bysu_"
+    emailDomain: "@test.com"
+    userType: "Organization Admin"
+    role: "Admin"
+    organization: "SignaTech"
+
+  - firstName: "Auto"
+    lastName: "OrgUser"
+    usernamePrefix: "auto_ou_bysu_"
+    emailDomain: "@test.com"
+    userType: "Organization User"
+    role: "Admin"
+    organization: "SignaTech"

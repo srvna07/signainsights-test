@@ -1,0 +1,26 @@
+credentials:
+  username: "orgadmin_test_user"
+  password: "OrgAdmin@123"
+
+primary_organization: "SignaTech"
+
+create_users:
+  org_user:
+    firstName: "OU"
+    lastName: "ByOA"
+    username: "auto_ou_byoa"
+    email: "auto_ou_byoa@test.com"
+    organization: "SignaTech"
+
+  org_admin:
+    firstName: "OA2"
+    lastName: "ByOA"
+    username: "auto_oa2_byoa"
+    email: "auto_oa2_byoa@test.com"
+    organization: "SignaTech"
+
+# Report this org admin should be able to see (assigned by SA or SU)
+expected_report: "SignaTech - Profit and Loss"
+
+# Report from a different org — must NOT be visible to this admin
+other_org_report: "TFL-Memphis - Revenue By"

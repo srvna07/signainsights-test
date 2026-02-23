@@ -1,0 +1,38 @@
+# Super Admin credentials
+credentials:
+  username: "sa_test_user"
+  password: "SuperAdmin@123"
+
+# Users created during Super Admin tests (username/email generated at runtime)
+create_users:
+  - firstName: "Auto"
+    lastName: "SuperAdmin"
+    usernamePrefix: "auto_sa_"
+    emailDomain: "@test.com"
+    userType: "Super Admin"
+    role: "Admin"
+    organization: "SignaTech"
+
+  - firstName: "Auto"
+    lastName: "SignaUser"
+    usernamePrefix: "auto_su_"
+    emailDomain: "@test.com"
+    userType: "Signa User"
+    role: "Admin"
+    organization: "SignaTech"
+
+  - firstName: "Auto"
+    lastName: "OrgAdmin"
+    usernamePrefix: "auto_oa_"
+    emailDomain: "@test.com"
+    userType: "Organization Admin"
+    role: "Admin"
+    organization: "SignaTech"
+
+  - firstName: "Auto"
+    lastName: "OrgUser"
+    usernamePrefix: "auto_ou_"
+    emailDomain: "@test.com"
+    userType: "Organization User"
+    role: "Admin"
+    organization: "SignaTech"

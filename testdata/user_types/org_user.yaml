@@ -1,0 +1,8 @@
+credentials:
+  username: "orguser_test_user"
+  password: "OrgUser@123"
+
+# Organizations this user is assigned to (used for multi-org chip verification)
+assigned_organizations:
+  - "SignaTech"
+  - "SignaInsightsDemo"
