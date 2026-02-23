@@ -13,3 +13,13 @@ class TestDataLoader:
             data = yaml.safe_load(file)
 
         return data
+    
+    def import_new_organization_test_data():
+        # 1. Define the path to your file
+        yaml_path = Path("testdata/new_organization.yaml")
+
+        # 2. Open and read the file
+        with open(yaml_path, "r") as file:
+            data = yaml.safe_load(file)
+
+        return data

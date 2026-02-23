@@ -58,12 +58,9 @@ class NewOrganizationPage(BasePage):
         self.organization_btn.click()
         self.new_organization__btn.click()
 
-
     def fill_basic_info(self, org_name, franchise_id):
         self.organization_name.fill(org_name)
-        self.franchise_id.fill(franchise_id)
-
-    
+        self.franchise_id.fill(franchise_id)    
 
     def fill_contact_info(self, phone, mobile,address1, address2, city, state, country, zip_code, web_address):
         self.phone.fill(phone)
@@ -76,8 +73,8 @@ class NewOrganizationPage(BasePage):
         self.zip_code.fill(zip_code)
         self.web_address.fill(web_address)
 
-    def fill_organization_info(self, name, franchise_id, phone, mobile, address1, address2, city, state, country, zip_code, web_address):
-        self.organization_name.fill(name)
+    def fill_organization_info(self, namePrefix, franchise_id, phone, mobile, address1, address2, city, state, country, zip_code, web_address):
+        self.organization_name.fill(namePrefix)
         self.franchise_id.fill(franchise_id)
         self.phone.fill(phone)
         self.mobile.fill(mobile)
@@ -95,10 +92,12 @@ class NewOrganizationPage(BasePage):
     def verify_success(self):
         expect(self.success_message).to_be_visible()
 
-    def create_organization_action(self, **kwargs):
-        self.open_form()    
-        self.fill_organization_info(**kwargs)
+    def create_organization_action(self, organization, contact):
+        self.open_form()
+        all_data = organization | contact
+        self.fill_organization_info(**all_data)
         self.submit_form()
+        self.verify_success()
 
     # -----------------------------
     # Delete methods

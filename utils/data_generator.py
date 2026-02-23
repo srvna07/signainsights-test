@@ -38,18 +38,41 @@ class DataGenerator:
         data["new_report"]["report_name"] = cls.generate_report_name()
         data["new_report"]["menu_name"] = cls.generate_menu_name()
         data["edit_report"]["report_name"] = cls.generate_report_name("Test_Edited_Report")
-        data["organization"]["name"] = cls.generate_organization_name()
+        # data["organization"]["name"] = cls.generate_organization_name()
 
         with open(cls.DATA_FILE, "w") as file:
             yaml_string = yaml.dump(data, sort_keys=False)
             yaml_string = yaml_string.replace("\nedit_report:", "\n\nedit_report:")
-            yaml_string = yaml_string.replace("\norganization:", "\n\norganization:")
+            # yaml_string = yaml_string.replace("\norganization:", "\n\norganization:")
             file.write(yaml_string)
 
         print("YAML updated successfully.")
+        return data
+    
+
+    @classmethod
+    def update_organization_fields(cls):
+        # Update path to your organization data file
+        ORG_FILE = Path("testdata/new_organization.yaml")
+        
+        if not ORG_FILE.exists():
+            raise FileNotFoundError(f"{ORG_FILE} not found")
+
+        with open(ORG_FILE, "r") as file:
+            data = yaml.safe_load(file)
+
+        # FIX: Match the YAML key 'namePrefix' 
+        # We generate a unique string and store it back into namePrefix
+        new_org_name = cls.generate_organization_name("Org")
+        data["organization"]["namePrefix"] = new_org_name
+
+        with open(ORG_FILE, "w") as file:
+            yaml.dump(data, file, sort_keys=False)
+
         return data
 
 
 # Allow standalone execution
 if __name__ == "__main__":
     DataGenerator.update_report_fields()
+    DataGenerator.update_organization_fields()

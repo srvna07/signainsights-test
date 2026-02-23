@@ -1,3 +1,4 @@
+import yaml
 import os
 import pytest
 from playwright.sync_api import sync_playwright
@@ -162,12 +163,6 @@ def pytest_runtest_makereport(item, call):
 def update_organization_data():
     """Load update organization test data."""
     return DataReader.load_yaml("testdata/update_organization.yaml")
-
-
-
-import pytest
-import yaml
-import os
 
 @pytest.fixture
 def report_test_data():

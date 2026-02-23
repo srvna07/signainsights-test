@@ -17,7 +17,7 @@ class DataFactory:
         return prefix + DataFactory.random_string() + domain
 
     @staticmethod
-    def random_org_name(prefix="Org_"):
+    def random_org_name(prefix="Test_Org_Name"):
         return prefix + DataFactory.random_string()
 
     

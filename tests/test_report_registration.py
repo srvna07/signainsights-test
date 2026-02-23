@@ -1,8 +1,9 @@
 from playwright.sync_api import expect
 from pages.report_registration_page import ReportRegistrationPageActions
 from pages.organizations_page import NewOrganizationPage
-from utils.test_data_loader import TestDataLoader
+from utils.testdata_loader import TestDataLoader
 from utils.data_generator import DataGenerator
+from utils.data_factory import DataFactory
 import yaml
 from pathlib import Path
 import pytest
@@ -11,30 +12,35 @@ import logging
 # 1. FIX: Define the logger so it stops crashing
 logger = logging.getLogger(__name__)
 
+# organization_test_data = DataFactory.
 report_test_data = DataGenerator.update_report_fields()
+organization_test_data = DataGenerator.update_organization_fields()
 data = TestDataLoader.import_report_registration_test_data()
+org_data = TestDataLoader.import_new_organization_test_data()
+
 
 @pytest.mark.smoke
 def test_create_new_organization(authenticated_page):
-    # 1. Load the data using your new class method
-    data = TestDataLoader.import_report_registration_test_data()
-    org_data = data["organization"]
+    # 1. Access the global data you loaded at the top
+    org_info = org_data["organization"]
+    contact_info = org_data["contact"]
 
-    # 2. create the Page Object
+    # 3. Initialize Page Object
     org_page = NewOrganizationPage(authenticated_page)
+    org_name = org_info["namePrefix"]
 
-    # 3. Call the action to perform the task
-    org_page.create_organization_action(**org_data)
-
-    # 4. Verify the resuls
-    org_page.verify_success()
-
+    # 4. Call action (Now organization has both 'org_name' and 'franchise_id')
+    org_page.create_organization_action(
+        organization=org_info, 
+        contact=contact_info
+    )
+    
 @pytest.mark.smoke
 def test_create_new_report(authenticated_page):
     
     # 1. Access your data blocks
     new_report = data["new_report"]
-    org_name = data["organization"]
+    org_name = org_data["organization"]
     
     # 2. Use the data in your actions
     report_page = ReportRegistrationPageActions(authenticated_page)
@@ -44,7 +50,7 @@ def test_create_new_report(authenticated_page):
         workspace_id=new_report["work_space_id"],
         report_id=new_report["report_id"],
         dataset_id=new_report["dataset_id"],
-        organization=org_name["name"]
+        organization=org_name["namePrefix"]
     )
 
     expect(authenticated_page.get_by_text(new_report["report_name"])).to_be_visible()
