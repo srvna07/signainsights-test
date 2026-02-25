@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, Locator, expect
 from .base_page import BasePage
 
 class ReportRegistrationPageLocators(BasePage):
@@ -10,7 +10,7 @@ class ReportRegistrationPageLocators(BasePage):
         # ---------- Static Page Elements ----------
 
         # Navigate report registration
-        self.report_registrations_btn = page.get_by_role("button", name="Report Registrations")
+        self.report_registrations_btn = page.get_by_role("button", name=" Report Registrations")
 
         # Search
         self.search_report = page.get_by_placeholder("Search")
@@ -115,8 +115,11 @@ class ReportRegistrationPageActions(BasePage):
         self.page = page
         self.locators = ReportRegistrationPageLocators(page)
 
+    def is_report_visible(self, report_name):
+        return self.page.get_by_role("option", name=report_name).is_visible()
+
     def navigate_to_report_registration(self):
-        self.locators.report_registrations_btn.wait_for(state="visible")
+        # self.locators.report_registrations_btn.wait_for(state="visible")
         self.locators.report_registrations_btn.click()
         
 
@@ -128,7 +131,7 @@ class ReportRegistrationPageActions(BasePage):
         self.locators.edit_button(report_name).click()
 
     def click_report_delete_button(self, report_name):
-        self.locators.edit_button(report_name).click()
+        self.locators.delete_button(report_name).click()
     
     # Edit dialog box
     def click_report_edit_confirmation_Button(self):
@@ -165,7 +168,14 @@ class ReportRegistrationPageActions(BasePage):
     
     # Search
     def Search_report(self, report_name):
-        self.locators.search_report(report_name)
+        self.locators.search_report.fill(report_name)
+        # self.locators.search_report.press("Enter")
+
+    def verify_search_bar_works(self, report_name):
+        expect(self.page.get_by_text(report_name).first).to_be_visible()
+
+    def clear_search_bar(self):
+        self.locators.search_report.clear()
 
     # New Report
     def click_create_new_report(self):
@@ -258,9 +268,13 @@ class ReportRegistrationPageActions(BasePage):
     def navigate_between_next_and_previous_pages(self):
         self.click_pagination_go_to_next_page()
         self.click_report_preview_button()
+    
+    def delete_the_created_or_edited_report(self, report_name):
+        self.click_report_delete_button(report_name)
+        self.click_report_delete_confirmation_button()
 
-    def is_report_visible(self, report_name):
-        return self.page.get_by_role("option", name=report_name).is_visible()
+    def verify_report_deleted(self, report_name):
+        expect(self.page.get_by_text(report_name)).not_to_be_visible()
 
 
 

@@ -1,25 +1,21 @@
-from pathlib import Path
 import yaml
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 class TestDataLoader:
-
-    def import_report_registration_test_data():
-        # 1. Define the path to your file
-        yaml_path = Path("testdata/report_registration.yaml")
-
-        # 2. Open and read the file
-        with open(yaml_path, "r") as file:
-            data = yaml.safe_load(file)
-
-        return data
     
-    def import_new_organization_test_data():
-        # 1. Define the path to your file
-        yaml_path = Path("testdata/new_organization.yaml")
-
-        # 2. Open and read the file
+    @staticmethod
+    def _load_file(filename: str):
+        yaml_path = PROJECT_ROOT / "testdata" / filename
+        
         with open(yaml_path, "r") as file:
-            data = yaml.safe_load(file)
+            return yaml.safe_load(file)
 
-        return data
+    @staticmethod
+    def import_report_registration_test_data():
+        return TestDataLoader._load_file("report_registration.yaml")
+    
+    @staticmethod
+    def import_new_organization_test_data():
+        return TestDataLoader._load_file("new_organization.yaml")

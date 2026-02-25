@@ -54,6 +54,10 @@ class NewOrganizationPage(BasePage):
     # -----------------------------
     # Methods
     # -----------------------------
+
+    def navigate_to_organization(self):
+        self.organization_btn.click()
+        
     def open_form(self):
         self.organization_btn.click()
         self.new_organization__btn.click()
@@ -93,11 +97,25 @@ class NewOrganizationPage(BasePage):
         expect(self.success_message).to_be_visible()
 
     def create_organization_action(self, organization, contact):
-        self.open_form()
-        all_data = organization | contact
-        self.fill_organization_info(**all_data)
-        self.submit_form()
-        self.verify_success()
+        # Fill Basic Info using the dictionary keys
+        self.navigate_to_organization()
+        self.new_organization__btn.click()
+        self.organization_name.fill(organization["namePrefix"])
+        self.franchise_id.fill(organization["franchise_id"])
+        
+        # Fill Contact Info using the dictionary keys
+        self.phone.fill(contact["phone"])
+        self.mobile.fill(contact["mobile"])
+        self.address_1.fill(contact["address1"])
+        self.address_2.fill(contact["address2"])
+        self.city.fill(contact["city"])
+        self.state.fill(contact["state"])
+        self.country.fill(contact["country"])
+        self.zip_code.fill(contact["zip_code"])
+        self.web_address.fill(contact["web_address"])
+        
+        # Click Save
+        self.create_btn.click()
 
     # -----------------------------
     # Delete methods
