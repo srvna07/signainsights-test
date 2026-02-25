@@ -54,18 +54,32 @@ class NewOrganizationPage(BasePage):
     # -----------------------------
     # Methods
     # -----------------------------
+
+    def navigate_to_organization(self):
+        self.organization_btn.click()
+        
     def open_form(self):
         self.organization_btn.click()
         self.new_organization__btn.click()
 
-
     def fill_basic_info(self, org_name, franchise_id):
         self.organization_name.fill(org_name)
-        self.franchise_id.fill(franchise_id)
-
-        
+        self.franchise_id.fill(franchise_id)    
 
     def fill_contact_info(self, phone, mobile,address1, address2, city, state, country, zip_code, web_address):
+        self.phone.fill(phone)
+        self.mobile.fill(mobile)
+        self.address_1.fill(address1)
+        self.address_2.fill(address2)
+        self.city.fill(city)
+        self.state.fill(state)
+        self.country.fill(country)
+        self.zip_code.fill(zip_code)
+        self.web_address.fill(web_address)
+
+    def fill_organization_info(self, namePrefix, franchise_id, phone, mobile, address1, address2, city, state, country, zip_code, web_address):
+        self.organization_name.fill(namePrefix)
+        self.franchise_id.fill(franchise_id)
         self.phone.fill(phone)
         self.mobile.fill(mobile)
         self.address_1.fill(address1)
@@ -80,8 +94,28 @@ class NewOrganizationPage(BasePage):
         self.create_btn.click()
 
     def verify_success(self):
-        """Verify user creation success message is visible."""
         expect(self.success_message).to_be_visible()
+
+    def create_organization_action(self, organization, contact):
+        # Fill Basic Info using the dictionary keys
+        self.navigate_to_organization()
+        self.new_organization__btn.click()
+        self.organization_name.fill(organization["namePrefix"])
+        self.franchise_id.fill(organization["franchise_id"])
+        
+        # Fill Contact Info using the dictionary keys
+        self.phone.fill(contact["phone"])
+        self.mobile.fill(contact["mobile"])
+        self.address_1.fill(contact["address1"])
+        self.address_2.fill(contact["address2"])
+        self.city.fill(contact["city"])
+        self.state.fill(contact["state"])
+        self.country.fill(contact["country"])
+        self.zip_code.fill(contact["zip_code"])
+        self.web_address.fill(contact["web_address"])
+        
+        # Click Save
+        self.create_btn.click()
 
     # -----------------------------
     # Delete methods

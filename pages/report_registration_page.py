@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, Locator, expect
 from .base_page import BasePage
 
 class ReportRegistrationPageLocators(BasePage):
@@ -10,7 +10,7 @@ class ReportRegistrationPageLocators(BasePage):
         # ---------- Static Page Elements ----------
 
         # Navigate report registration
-        self.report_registrations_btn = page.get_by_role("button", name="Report Registrations")
+        self.report_registrations_btn = page.get_by_role("button", name=" Report Registrations")
 
         # Search
         self.search_report = page.get_by_placeholder("Search")
@@ -21,7 +21,7 @@ class ReportRegistrationPageLocators(BasePage):
         # Pagination
         self.report_tabel_go_to_next_page = page.get_by_role("button", name = "Go to next page")
         self.report_tabel_go_to_previous_page = page.get_by_role("button", name = "Go to previous page")
-        self.report_tabel_rows_per_page = page.get_by_role("combobox")
+        self.report_tabel_rows_per_page = page.get_by_role("combobox", name="Rows per page:")
 
         # Role Options
         self.admin_option_in_role_combobox = self.page.get_by_role("option", name = "Admin")
@@ -31,9 +31,9 @@ class ReportRegistrationPageLocators(BasePage):
         self.operations_option_in_role_combobox = self.page.get_by_role("option", name = "Operations")
 
         # Row Per Page Options
-        self.report_table_5_rows_per_page = page.get_by_role("option", name="5")
-        self.report_table_5_rows_per_page = page.get_by_role("option", name="10")
-        self.report_table_25_rows_per_page = page.get_by_role("option", name="25")
+        self.report_table_5_rows_per_page = page.get_by_role("option", name="5", exact=True)
+        self.report_table_10_rows_per_page = page.get_by_role("option", name="10", exact=True)
+        self.report_table_25_rows_per_page = page.get_by_role("option", name="25", exact=True)
 
 
     # ---------- Shared Dialog ----------
@@ -66,7 +66,7 @@ class ReportRegistrationPageLocators(BasePage):
     def report_id_input(self) -> Locator:
         return self.dialog().get_by_label("ReportId *")
 
-    def dataset_id_input(self) -> Locator:
+    def data_set_id_input(self) -> Locator:
         return self.dialog().get_by_label("DatasetId *")
 
     def dashboard_checkbox(self) -> Locator:
@@ -115,9 +115,13 @@ class ReportRegistrationPageActions(BasePage):
         self.page = page
         self.locators = ReportRegistrationPageLocators(page)
 
+    def is_report_visible(self, report_name):
+        return self.page.get_by_role("option", name=report_name).is_visible()
+
     def navigate_to_report_registration(self):
+        # self.locators.report_registrations_btn.wait_for(state="visible")
         self.locators.report_registrations_btn.click()
-        self.locators.new_report.wait_for(state="visible")
+        
 
     # Table
     def click_report_preview_button(self, report_name):
@@ -127,7 +131,7 @@ class ReportRegistrationPageActions(BasePage):
         self.locators.edit_button(report_name).click()
 
     def click_report_delete_button(self, report_name):
-        self.locators.edit_button(report_name).click()
+        self.locators.delete_button(report_name).click()
     
     # Edit dialog box
     def click_report_edit_confirmation_Button(self):
@@ -159,12 +163,19 @@ class ReportRegistrationPageActions(BasePage):
     def click_pagination_go_to_next_page(self):
         self.locators.report_tabel_go_to_next_page.click()
 
-    def click_pagination_go_to_next_page(self):
+    def click_pagination_go_to_previous_page(self):
         self.locators.report_tabel_go_to_previous_page.click()
     
     # Search
     def Search_report(self, report_name):
-        self.locators.search_report(report_name)
+        self.locators.search_report.fill(report_name)
+        # self.locators.search_report.press("Enter")
+
+    def verify_search_bar_works(self, report_name):
+        expect(self.page.get_by_text(report_name).first).to_be_visible()
+
+    def clear_search_bar(self):
+        self.locators.search_report.clear()
 
     # New Report
     def click_create_new_report(self):
@@ -174,8 +185,8 @@ class ReportRegistrationPageActions(BasePage):
         self.locators.create_button().click()
 
     # fill fields in create and edit report dialogbox
-    def fill_the_report_name_file(self, report_name):
-        self.locators.report_name_input().fill(report_name)
+    def fill_the_report_name_file(self, edit_report_name):
+        self.locators.report_name_input().fill(edit_report_name)
 
     def fill_the_menu_input(self, menu_name):
         self.locators.menu_input().fill(menu_name)
@@ -189,6 +200,9 @@ class ReportRegistrationPageActions(BasePage):
 
     def fill_report_id_input(self, report_id):
         self.locators.report_id_input().fill(report_id)
+
+    def fill_dataset_id(self, data_set_id):
+        self.locators.data_set_id_input().fill(data_set_id)
 
     def click_role_combobox(self):
         self.locators.role_combobox().click()
@@ -212,41 +226,30 @@ class ReportRegistrationPageActions(BasePage):
         self.locators.operations_option_in_role_combobox.click()
 
     def select_created_organization(self, organization):
-        self.locators.organization_option(organization).click()
+        self.page.get_by_label("Organization").click()
+        option = self.page.get_by_role("option", name=organization)
+        option.wait_for(state="visible")
+        option.click()
 
 
 
-    def create_new_report(self, report_name, menu_name, workspace_id, report_id):
+    def create_new_report(self, report_name, menu_name, workspace_id, report_id, dataset_id, organization):
+        self.navigate_to_report_registration()
         self.click_create_new_report()
         self.fill_the_report_name_file(report_name)
         self.fill_the_menu_input(menu_name)
         self.fill_workspace_id_input(workspace_id)
         self.fill_report_id_input(report_id)
+        self.fill_dataset_id(dataset_id)
         self.click_role_combobox()
         self.select_admin_role_in_role_combobox()
         self.select_hr_role_in_role_combobox()
-        self.click_organization_combobox()
-        self.select_created_organization()
-        self.click_create_button()
-
-    def create_new_report_with_organization(self, report_name, menu_name, workspace_id, report_id, dataset_id, organization):
-        self.click_create_new_report()
-        self.fill_the_report_name_file(report_name)
-        self.fill_the_menu_input(menu_name)
-        self.fill_workspace_id_input(workspace_id)
-        self.fill_report_id_input(report_id)
-        self.fill_dataset_id_input(dataset_id)
-
-        self.click_role_combobox()
-        self.select_admin_role_in_role_combobox()
-
-        self.click_organization_combobox()
         self.select_created_organization(organization)
-
         self.click_create_button()
 
-    def edit_created_report(self, report_name):
-        self.fill_the_report_name_file(report_name)
+    def edit_created_report(self, report_name, edit_report_name):
+        self.click_report_edit_button(report_name)
+        self.fill_the_report_name_file(edit_report_name)
         self.click_role_combobox()
         self.select_sales_and_marketing_role_in_role_combobox()
         self.click_report_edit_confirmation_Button()
@@ -260,14 +263,18 @@ class ReportRegistrationPageActions(BasePage):
 
     def check_rows_per_pages_10(self):
         self.click_row_per_page_dropdown()
-        self.click_row_per_page_count_()
+        self.click_row_per_page_count_10()
 
     def navigate_between_next_and_previous_pages(self):
         self.click_pagination_go_to_next_page()
         self.click_report_preview_button()
+    
+    def delete_the_created_or_edited_report(self, report_name):
+        self.click_report_delete_button(report_name)
+        self.click_report_delete_confirmation_button()
 
-    def is_report_visible(self, report_name):
-        return self.page.get_by_role("option", name=report_name).is_visible()
+    def verify_report_deleted(self, report_name):
+        expect(self.page.get_by_text(report_name)).not_to_be_visible()
 
 
 
